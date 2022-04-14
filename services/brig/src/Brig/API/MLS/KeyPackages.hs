@@ -60,7 +60,6 @@ claimLocalKeyPackages :: Local UserId -> Maybe ClientId -> Local UserId -> Handl
 claimLocalKeyPackages lusr skipOwn target = do
   -- skip own client when the target is the requesting user itself
   let own = guard (lusr == target) *> skipOwn
-  traceM $ "own: " <> show own
   clients <- map clientId <$> wrapClientE (Data.lookupClients (tUnqualified target))
   withExceptT clientError $
     wrapHttpClientE $ guardLegalhold (ProtectedUser (tUnqualified lusr)) (mkUserClients [(tUnqualified target, clients)])
